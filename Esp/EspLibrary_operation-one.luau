@@ -386,7 +386,7 @@ do -- Player Metatable
             return
         end
 
-        local Bottom_Part = Leg1
+        local Bottom_Part = Leg1 or Leg2
         if Leg1 and Leg2 then
             Bottom_Part = Leg1.Position.Y < Leg2.Position.Y and Leg1 or Leg2
         end
