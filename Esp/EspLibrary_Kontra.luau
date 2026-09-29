@@ -1,3 +1,8 @@
+--[[
+natsuki.pink esp lib lol
+wawawawa
+]]
+
 if getgenv().ESP and getgenv().ESP.Unload then
     pcall(getgenv().ESP.Unload)
 end
