@@ -207,6 +207,14 @@ function ESP:Get_Health(Player)
     if self.Overrides.Get_Health ~= nil then
         return self.Overrides.Get_Health(Player)
     end
+    if Ent and typeof(Ent.GetHealth) == "function" then
+        local Ok, H = pcall(Ent.GetHealth, Player)
+        if Ok and H then return H end
+    end
+    local Entity = self:Get_Character(Player)
+    if Entity and Entity.Health then
+        return Entity.Health
+    end
     return Player:GetAttribute("Health") or 0
 end
 
