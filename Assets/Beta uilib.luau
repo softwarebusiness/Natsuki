@@ -3654,20 +3654,27 @@ end
 		end
 
 		Cfg.NewKey = function()
-			task.wait()
-			Items.Value.Instance.Text = "..."
-			Items.FakeText.Instance.Text = "..."
+    		task.wait()
+    		Items.Value.Instance.Text = "..."
+    		Items.FakeText.Instance.Text = "..."
 
-			Cfg.Binding = Library:Connect(Services.UserInputService.InputBegan, function(keycode, game_event)
-				if Services.UserInputService:GetFocusedTextBox() then
-    				return
-				end
+    		if Cfg.Binding and Cfg.Binding.Connection then
+    		    Cfg.Binding.Connection:Disconnect()
+    		end
+    		Cfg.Binding = nil
 
-				Cfg.Set(keycode.KeyCode ~= Enum.KeyCode.Unknown and keycode.KeyCode or keycode.UserInputType)
+    		Cfg.Binding = Library:Connect(Services.UserInputService.InputBegan, function(keycode, game_event)
+    		    if Services.UserInputService:GetFocusedTextBox() then
+    		        return
+    		    end
 
-				Cfg.Binding.Connection:Disconnect()
-				Cfg.Binding = nil
-			end)
+    		    Cfg.Set(keycode.KeyCode ~= Enum.KeyCode.Unknown and keycode.KeyCode or keycode.UserInputType)
+
+    		    if Cfg.Binding and Cfg.Binding.Connection then
+    		        Cfg.Binding.Connection:Disconnect()
+    		    end
+    		    Cfg.Binding = nil
+    		end)
 		end
 
 		Items.KeybindHolder:OnClick(Cfg.NewKey)
