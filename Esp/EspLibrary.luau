@@ -261,24 +261,24 @@ do -- Player Metatable
         local Character = ESP:Get_Character(self.Player)
 
         if Character ~= nil and Character == Players.LocalPlayer.Character and not ESP.Settings.Self_Esp then
-            ESP:HideAll(Components)
+            ESP:Hide_All(Components)
             return
         end
 
         if Character == nil then
-            ESP:HideAll(Components)
+            ESP:Hide_All(Components)
             return
         end
 
         local Head, HumanoidRootPart, Humanoid = Character:FindFirstChild("Head"), Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChildOfClass("Humanoid")
         if not (Head and HumanoidRootPart and Humanoid) then
-            ESP:HideAll(Components)
+            ESP:Hide_All(Components)
             return
         end
 
         local Current_Health, Health_Maximum = ESP:Get_Health(self.Player), Humanoid.MaxHealth
         if Current_Health <= 0 then
-            ESP:HideAll(Components)
+            ESP:Hide_All(Components)
             return
         end
 
@@ -577,7 +577,7 @@ do -- Player Metatable
                 end
             end
         else
-            ESP:HideAll(Components)
+            ESP:Hide_All(Components)
             return
         end
     end
