@@ -2784,161 +2784,172 @@ do
 	end
 
 	Library.AddToggle = function(self, Data)
-		Data = Data or {}
+    Data = Data or {}
 
-		local Cfg = {
-			Text = Data.Text or "Toggle",
-			Flag = Data.Flag or Data.Name or Data.Text or "Toggle",
-			Enabled = Data.Default or false,
-			Callback = Data.Callback or function() end,
+    local Cfg = {
+        Text = Data.Text or "Toggle",
+        Flag = Data.Flag or Data.Name or Data.Text or "Toggle",
+        Enabled = Data.Default or false,
+        Callback = Data.Callback or function() end,
 
-			Items = {},
-		}
+        Items = {},
+        Keybind = nil,
+    }
 
-		local Items = Cfg.Items
-		do
-			Items.Toggle = Library:Create("TextButton", {
-				Active = false,
-				Parent = self.Items.Elements.Instance,
-				Size = UDim2.new(1, 0, 0, 0),
-				ZIndex = 3,
-				BackgroundTransparency = 1,
-				Selectable = false,
-				BorderSizePixel = 0,
-				TextTransparency = 1,
-				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-			})
+    local Items = Cfg.Items
+    do
+        Items.Toggle = Library:Create("TextButton", {
+            Active = false,
+            Parent = self.Items.Elements.Instance,
+            Size = UDim2.new(1, 0, 0, 0),
+            ZIndex = 3,
+            BackgroundTransparency = 1,
+            Selectable = false,
+            BorderSizePixel = 0,
+            TextTransparency = 1,
+            AutomaticSize = Enum.AutomaticSize.Y,
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        })
 
-			Items.Title = Library:Create("TextLabel", {
-				TextColor3 = Themes.Preset.Unselected,
-				Text = Cfg.Text,
-				Parent = Items.Toggle.Instance,
-				AutomaticSize = Enum.AutomaticSize.XY,
-				BackgroundTransparency = 1,
-				Position = UDim2.new(0, 26, 0, 1),
-				BorderSizePixel = 0,
-				ZIndex = 2,
-				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-			})
+        Items.Title = Library:Create("TextLabel", {
+            TextColor3 = Themes.Preset.Unselected,
+            Text = Cfg.Text,
+            Parent = Items.Toggle.Instance,
+            AutomaticSize = Enum.AutomaticSize.XY,
+            BackgroundTransparency = 1,
+            Position = UDim2.new(0, 26, 0, 1),
+            BorderSizePixel = 0,
+            ZIndex = 2,
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        })
 
-			Items.ToggleOutline = Library:Create("Frame", {
-				Parent = Items.Toggle.Instance,
-				BackgroundTransparency = 0.75,
-				Size = UDim2.new(0, 18, 0, 18),
-				BorderSizePixel = 0,
-				BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-			}):Themify("Black", "BackgroundColor3")
+        Items.ToggleOutline = Library:Create("Frame", {
+            Parent = Items.Toggle.Instance,
+            BackgroundTransparency = 0.75,
+            Size = UDim2.new(0, 18, 0, 18),
+            BorderSizePixel = 0,
+            BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+        }):Themify("Black", "BackgroundColor3")
 
-			Items.Accent = Library:Create("Frame", {
-				Parent = Items.Toggle.Instance,
-				BackgroundTransparency = 1,
-				Size = UDim2.new(0, 20, 0, 20),
-				Position = UDim2.fromOffset(-1, -1),
-				BorderSizePixel = 0,
-				ZIndex = 2,
-				BackgroundColor3 = Themes.Preset.Accent,
-			}):Themify("Accent", "BackgroundColor3")
+        Items.Accent = Library:Create("Frame", {
+            Parent = Items.Toggle.Instance,
+            BackgroundTransparency = 1,
+            Size = UDim2.new(0, 20, 0, 20),
+            Position = UDim2.fromOffset(-1, -1),
+            BorderSizePixel = 0,
+            ZIndex = 2,
+            BackgroundColor3 = Themes.Preset.Accent,
+        }):Themify("Accent", "BackgroundColor3")
 
-			Library:Create("UICorner", {
-				Parent = Items.ToggleOutline.Instance,
-				CornerRadius = UDim.new(0, 5),
-			})
+        Library:Create("UICorner", {
+            Parent = Items.ToggleOutline.Instance,
+            CornerRadius = UDim.new(0, 5),
+        })
 
-			Library:Create("UICorner", {
-				Parent = Items.Accent.Instance,
-				CornerRadius = UDim.new(0, 5),
-			})
+        Library:Create("UICorner", {
+            Parent = Items.Accent.Instance,
+            CornerRadius = UDim.new(0, 5),
+        })
 
-			Items.Tick = Library:Create("ImageLabel", {
-				ImageTransparency = 1,
-				Parent = Items.ToggleOutline.Instance,
-				Image = "rbxassetid://137332523173375",
-				BackgroundTransparency = 1,
-				Position = UDim2.new(0, 2, 0, 2),
-				Size = UDim2.new(1, -4, 1, -4),
-				ZIndex = 3,
-				BorderSizePixel = 0,
-				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-			})
+        Items.Tick = Library:Create("ImageLabel", {
+            ImageTransparency = 1,
+            Parent = Items.ToggleOutline.Instance,
+            Image = "rbxassetid://137332523173375",
+            BackgroundTransparency = 1,
+            Position = UDim2.new(0, 2, 0, 2),
+            Size = UDim2.new(1, -4, 1, -4),
+            ZIndex = 3,
+            BorderSizePixel = 0,
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        })
 
-			Items.Outline = Library:Create("UIStroke", {
-				Color = Color3.fromRGB(44, 45, 57),
-				Transparency = 0.550000011920929,
-				Parent = Items.ToggleOutline.Instance,
-			}):Themify("Accent", "Color")
+        Items.Outline = Library:Create("UIStroke", {
+            Color = Color3.fromRGB(44, 45, 57),
+            Transparency = 0.550000011920929,
+            Parent = Items.ToggleOutline.Instance,
+        }):Themify("Accent", "Color")
 
-			Items.Components = Library:Create("Frame", {
-				Parent = Items.Toggle.Instance,
-				Position = UDim2.new(1, 0, 0, 0),
-				Size = UDim2.new(0, 0, 1, 0),
-				BorderSizePixel = 0,
-				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-			})
+        Items.Components = Library:Create("Frame", {
+            Parent = Items.Toggle.Instance,
+            Position = UDim2.new(1, 0, 0, 0),
+            Size = UDim2.new(0, 0, 1, 0),
+            BorderSizePixel = 0,
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        })
 
-			Library:Create("UIListLayout", {
-				FillDirection = Enum.FillDirection.Horizontal,
-				HorizontalAlignment = Enum.HorizontalAlignment.Right,
-				Parent = Items.Components.Instance,
-				Padding = UDim.new(0, 7),
-				SortOrder = Enum.SortOrder.LayoutOrder,
-			})
-		end
+        Library:Create("UIListLayout", {
+            FillDirection = Enum.FillDirection.Horizontal,
+            HorizontalAlignment = Enum.HorizontalAlignment.Right,
+            Parent = Items.Components.Instance,
+            Padding = UDim.new(0, 7),
+            SortOrder = Enum.SortOrder.LayoutOrder,
+        })
+    end
 
-		Cfg.Set = function(bool)
-			if bool then
-				Items.Tick.Instance.Rotation = -45
+    local Syncing = false
 
-				Items.Accent:Tween({
-					BackgroundTransparency = 0,
-				})
+    Cfg.Set = function(bool)
+        if Syncing then return end
 
-				Items.Tick:Tween({ ImageTransparency = 0, Rotation = 0 })
-			else
-				Items.Accent:Tween({
-					BackgroundTransparency = 1,
-				})
+        if bool then
+            Items.Tick.Instance.Rotation = -45
+            Items.Accent:Tween({ BackgroundTransparency = 0 })
+            Items.Tick:Tween({ ImageTransparency = 0, Rotation = 0 })
+        else
+            Items.Accent:Tween({ BackgroundTransparency = 1 })
+            Items.Tick:Tween({ ImageTransparency = 1 })
+        end
 
-				Items.Tick:Tween({ ImageTransparency = 1 })
-			end
+        Cfg.Enabled = bool
+        Flags[Cfg.Flag] = bool
+        Cfg.Callback(bool)
 
-			-- Library:Connect(Cfg.Tween.Completed, function()
-			--     Cfg.Tween = nil
-			--     Items.ToggleOutline.BackgroundColor3 = Themes.Preset.Accent
-			-- end)
+        if Cfg.Keybind and Cfg.Keybind.Active ~= bool then
+            Syncing = true
+            Cfg.Keybind:Set({ Active = bool, Mode = Cfg.Keybind.Mode, Key = Cfg.Keybind.Key })
+            Syncing = false
+        end
+    end
 
-			Flags[Cfg.Flag] = bool
-			Cfg.Callback(bool)
-		end
+    Cfg.Hovering = function()
+        if Cfg.Enabled then return end
+        Items.Title:Tween({ TextColor3 = Themes.Preset.TextColor })
+    end
 
-		Cfg.Hovering = function()
-			if Cfg.Enabled then
-				return
-			end
+    Cfg.NoHover = function()
+        if Cfg.Enabled then return end
+        Items.Title:Tween({ TextColor3 = Themes.Preset.Unselected })
+    end
 
-			Items.Title:Tween({ TextColor3 = Themes.Preset.TextColor })
-		end
+    Items.Toggle:OnClick(function()
+        Cfg.Set(not Cfg.Enabled)
+    end)
 
-		Cfg.NoHover = function()
-			if Cfg.Enabled then
-				return
-			end
+    Items.Toggle:OnHover(Cfg.Hovering, Cfg.NoHover)
 
-			Items.Title:Tween({ TextColor3 = Themes.Preset.Unselected })
-		end
+    ConfigFlags[Cfg.Flag] = Cfg.Set
+    Cfg.Set(Cfg.Enabled)
 
-		Items.Toggle:OnClick(function()
-			Cfg.Enabled = not Cfg.Enabled
-			Cfg.Set(Cfg.Enabled)
-		end)
+    if Data.Key then
+        Cfg.Keybind = self:AddKeyPicker({
+            Text = (Data.KeybindText or Cfg.Text) .. " Key",
+            Flag = (Data.KeybindFlag or (Cfg.Flag .. "_key")),
+            Default = Data.Key,
+            Mode = Data.KeybindMode or "Toggle",
+            ShowInList = Data.ShowKeyInList ~= false,
+            Callback = function(Active)
+                if Syncing then return end
+                if Cfg.Enabled ~= Active then
+                    Syncing = true
+                    Cfg.Set(Active)
+                    Syncing = false
+                end
+            end,
+        })
+    end
 
-		Items.Toggle:OnHover(Cfg.Hovering, Cfg.NoHover)
-
-		ConfigFlags[Cfg.Flag] = Cfg.Set
-		Cfg.Set(Cfg.Enabled)
-
-		return setmetatable(Cfg, Library)
-	end
+    return setmetatable(Cfg, Library)
+end
 
 	Library.AddSlider = function(self, Data)
 		Data = Data or {}
@@ -3669,10 +3680,7 @@ do
 		end)
 
 		Library:Connect(Services.UserInputService.InputBegan, function(input, game_event)
-			if game_event then
-				return
-			end
-
+			if Services.UserInputService:GetFocusedTextBox() then return end
 			local SelectedKey = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode
 				or input.UserInputType
 
@@ -3687,10 +3695,7 @@ do
 		end)
 
 		Library:Connect(Services.UserInputService.InputEnded, function(input, game_event)
-			if game_event then
-				return
-			end
-
+			if Services.UserInputService:GetFocusedTextBox() then return end
 			local SelectedKey = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode
 				or input.UserInputType
 
