@@ -453,21 +453,25 @@ do
 	end
 
 	Library.ConvertEnum = function(self, enum)
-		local EnumParts = {}
+    	if type(enum) ~= "string" then
+   	    	return enum
+    	end
 
-		for _, part in string.gmatch(tostring(enum), "[%w_]+") do
-			table.insert(EnumParts, part)
-		end
+    	if enum == "NONE" or enum == "" then
+    	    return enum
+    	end
 
-		local EnumTable = tostring(enum)
+    	local KeyCodeName = enum:match("^Enum%.KeyCode%.(.+)$") or enum
+    	if Enum.KeyCode[KeyCodeName] then
+    	    return Enum.KeyCode[KeyCodeName]
+    	end
 
-		for i = 2, #EnumParts do
-			local EnumItem = EnumTable[EnumParts[i]]
+    	local InputName = enum:match("^Enum%.UserInputType%.(.+)$") or enum
+    	if Enum.UserInputType[InputName] then
+    	    return Enum.UserInputType[InputName]
+    	end
 
-			EnumTable = EnumItem
-		end
-
-		return EnumTable
+    	return enum
 	end
 
 	Library.Lerp = function(start, finish, t)
@@ -2896,10 +2900,8 @@ do
         })
     end
 
-    local Syncing = false
-
     Cfg.Set = function(bool)
-        if Syncing then return end
+        bool = not not bool
 
         if bool then
             Items.Tick.Instance.Rotation = -45
@@ -2915,9 +2917,11 @@ do
         Cfg.Callback(bool)
 
         if Cfg.Keybind and Cfg.Keybind.Active ~= bool then
-            Syncing = true
-            Cfg.Keybind:Set({ Active = bool, Mode = Cfg.Keybind.Mode, Key = Cfg.Keybind.Key })
-            Syncing = false
+            Cfg.Keybind:Set({
+                Active = bool,
+                Mode = Cfg.Keybind.Mode,
+                Key = Cfg.Keybind.Key,
+            })
         end
     end
 
@@ -2948,11 +2952,8 @@ do
             Mode = Data.KeybindMode or "Toggle",
             ShowInList = Data.ShowKeyInList ~= false,
             Callback = function(Active)
-                if Syncing then return end
                 if Cfg.Enabled ~= Active then
-                    Syncing = true
                     Cfg.Set(Active)
-                    Syncing = false
                 end
             end,
         })
