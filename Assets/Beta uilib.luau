@@ -64,7 +64,7 @@ if getgenv().Library then
 	game.ExperienceService:LaunchExperience({ placeId = game.PlaceId })
 end
 getgenv().Library = {
-	Directory = "JEW",
+	Directory = "Natsuki",
 	Folders = {
 		"/Fonts",
 		"/Configs",
@@ -97,7 +97,7 @@ do
 			["1"] = Color3.fromRGB(44, 44, 44),
 			["2"] = Color3.fromRGB(41, 40, 40),
 			["3"] = Color3.fromRGB(12, 12, 12),
-			["Accent"] = Color3.fromRGB(157, 80, 209),
+			["Accent"] = Color3.fromRGB(255, 192, 203),
 			["Hover"] = Color3.fromRGB(226, 228, 235),
 			["TextColor"] = Color3.fromRGB(194, 196, 202),
 			["Unselected"] = Color3.fromRGB(109, 110, 113),
@@ -172,11 +172,11 @@ do
 
 		Fonts.__index = Fonts
 		Fonts.RegisterFont = function(self, Name, Weight, Style, Asset)
-			if not isfile("jew" .. "/Fonts/" .. tostring(Asset.Id)) then
-				writefile("jew" .. "/Fonts/" .. tostring(Asset.Id), Asset.Font)
+			if not isfile("Natsuki" .. "/Fonts/" .. tostring(Asset.Id)) then
+				writefile("Natsuki" .. "/Fonts/" .. tostring(Asset.Id), Asset.Font)
 			end
-			if isfile("jew" .. "/Fonts/" .. Name .. ".font") then
-				return getcustomasset("jew" .. "/Fonts/" .. Name .. ".font")
+			if isfile("Natsuki" .. "/Fonts/" .. Name .. ".font") then
+				return getcustomasset("Natsuki" .. "/Fonts/" .. Name .. ".font")
 			end
 			local Data = {
 				name = Name,
@@ -185,12 +185,12 @@ do
 						name = "Normal",
 						weight = Weight,
 						style = Style,
-						assetId = getcustomasset("jew" .. "/Fonts/" .. tostring(Asset.Id)),
+						assetId = getcustomasset("Natsuki" .. "/Fonts/" .. tostring(Asset.Id)),
 					},
 				},
 			}
-			writefile("jew" .. "/Fonts/" .. Name .. ".font", Services.HttpService:JSONEncode(Data))
-			return getcustomasset("jew" .. "/Fonts/" .. Name .. ".font")
+			writefile("Natsuki" .. "/Fonts/" .. Name .. ".font", Services.HttpService:JSONEncode(Data))
+			return getcustomasset("Natsuki" .. "/Fonts/" .. Name .. ".font")
 		end
 
 		for Name, Suffix in FontNames do
@@ -1956,7 +1956,7 @@ do
 			Data = Data or {}
 
 			local Cfg = {
-				Title = Data.Title or "jew",
+				Title = Data.Title or "Natsuki",
 				Description = Data.Description or "I forgot to put text in this notification",
 				Lifetime = Data.Lifetime or 5,
 				Size = Data.Size or 200,
@@ -2212,7 +2212,7 @@ do
 		local Self = self
 
 		local Cfg = {
-			Title = Data.Title or "jew",
+			Title = Data.Title or "Natsuki",
 			Size = Data.Size or UDim2.fromOffset(660, 430),
 			Image = Data.Image or "rbxassetid://89635874972034",
 
@@ -4058,3 +4058,5 @@ do
 		ConfigHolder:UpdateConfigList()
 	end
 end
+
+return Library
