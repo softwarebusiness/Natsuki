@@ -2429,6 +2429,16 @@ do
 
 		function Cfg.SetVisible(Bool)
 			Items.Menu:TweenDescendants(Bool, Cfg)
+			local UIS = Services.UserInputService
+    		if Bool then
+    		    UIS.MouseBehavior = Enum.MouseBehavior.Default
+    		    UIS.MouseIconEnabled = true
+    		    UIS.ModalEnabled = true
+    		else
+    		    UIS.MouseBehavior = Enum.MouseBehavior.Default
+    		    UIS.MouseIconEnabled = false
+    		    UIS.ModalEnabled = false
+   			end
 		end
 
 		return setmetatable(Cfg, Library)
@@ -4020,7 +4030,7 @@ end
 		Section:AddKeyPicker({
     		Text = "Menu bind",
     		Mode = "Toggle",
-    		Default = "RightShift",
+    		Default = "RS",
     		Active = true,
     		ShowInList = false,
     		Callback = function(Value)
