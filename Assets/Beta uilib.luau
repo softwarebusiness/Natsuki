@@ -2435,7 +2435,7 @@ do
     		    UIS.MouseIconEnabled = true
     		    UIS.ModalEnabled = true
     		else
-    		    UIS.MouseBehavior = Enum.MouseBehavior.Default
+    		    UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
     		    UIS.MouseIconEnabled = false
     		    UIS.ModalEnabled = false
    			end
@@ -4030,7 +4030,7 @@ end
 		Section:AddKeyPicker({
     		Text = "Menu bind",
     		Mode = "Toggle",
-    		Default = "RS",
+    		Default = "None",
     		Active = true,
     		ShowInList = false,
     		Callback = function(Value)
