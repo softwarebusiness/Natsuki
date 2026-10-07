@@ -4013,12 +4013,14 @@ do
 		})
 
 		Section:AddKeyPicker({
-			Text = "Menu bind",
-			Mode = "Toggle",
-			ShowInList = false,
-			Callback = function(Value)
-				self.SetVisible(Value)
-			end,
+    		Text = "Menu bind",
+    		Mode = "Toggle",
+    		Default = "RightShift",
+    		Active = true,
+    		ShowInList = false,
+    		Callback = function(Value)
+    		    self.SetVisible(Value)
+    		end,
 		})
 
 		Section:AddSlider({
