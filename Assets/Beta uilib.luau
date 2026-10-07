@@ -3659,8 +3659,8 @@ end
 			Items.FakeText.Instance.Text = "..."
 
 			Cfg.Binding = Library:Connect(Services.UserInputService.InputBegan, function(keycode, game_event)
-				if game_event then
-					return
+				if Services.UserInputService:GetFocusedTextBox() then
+    				return
 				end
 
 				Cfg.Set(keycode.KeyCode ~= Enum.KeyCode.Unknown and keycode.KeyCode or keycode.UserInputType)
