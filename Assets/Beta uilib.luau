@@ -1094,19 +1094,14 @@ do
 	end
 
 	Library.Connect = function(self, Signal, Callback)
-		local ConnectionInfo = {
-			Event = Signal,
-			Callback = Callback,
-			Connection,
-		}
+    	local ConnectionInfo = {
+    	    Event = Signal,
+    	    Callback = Callback,
+    	    Connection = Signal:Connect(Callback),
+    	}
 
-		Library:Thread(function()
-			ConnectionInfo.Connection = Signal:Connect(Callback)
-		end)
-
-		table.insert(self.Connections, ConnectionInfo)
-
-		return ConnectionInfo
+    	table.insert(self.Connections, ConnectionInfo)
+    	return ConnectionInfo
 	end
 
 	Library.OnClick = function(self, Callback)
@@ -2798,23 +2793,23 @@ do
 	end
 
 	Library.AddToggle = function(self, Data)
-    Data = Data or {}
+    	Data = Data or {}
 
-    local Cfg = {
-        Text = Data.Text or "Toggle",
-        Flag = Data.Flag or Data.Name or Data.Text or "Toggle",
-        Enabled = Data.Default or false,
-        Callback = Data.Callback or function() end,
+    	local Cfg = {
+    	    Text = Data.Text or "Toggle",
+    	    Flag = Data.Flag or Data.Name or Data.Text or "Toggle",
+    	    Enabled = Data.Default or false,
+    	    Callback = Data.Callback or function() end,
 
-        Items = {},
-        Keybind = nil,
-    }
+    	    Items = {},
+    	    Keybind = nil,
+    	}
 
-    local Items = Cfg.Items
-    do
-        Items.Toggle = Library:Create("TextButton", {
-            Active = false,
-            Parent = self.Items.Elements.Instance,
+    	local Items = Cfg.Items
+    	do
+    	    Items.Toggle = Library:Create("TextButton", {
+	        Active = false,
+   	        Parent = self.Items.Elements.Instance,
             Size = UDim2.new(1, 0, 0, 0),
             ZIndex = 3,
             BackgroundTransparency = 1,
@@ -2901,29 +2896,24 @@ do
     end
 
     Cfg.Set = function(bool)
-        bool = not not bool
+    	bool = not not bool
 
-        if bool then
-            Items.Tick.Instance.Rotation = -45
-            Items.Accent:Tween({ BackgroundTransparency = 0 })
-            Items.Tick:Tween({ ImageTransparency = 0, Rotation = 0 })
-        else
-            Items.Accent:Tween({ BackgroundTransparency = 1 })
-            Items.Tick:Tween({ ImageTransparency = 1 })
-        end
+    	Items.Accent.Instance.BackgroundTransparency = bool and 0 or 1
+    	Items.Tick.Instance.ImageTransparency = bool and 0 or 1
+    	Items.Tick.Instance.Rotation = 0
 
-        Cfg.Enabled = bool
-        Flags[Cfg.Flag] = bool
-        Cfg.Callback(bool)
+    	Cfg.Enabled = bool
+    	Flags[Cfg.Flag] = bool
+    	Cfg.Callback(bool)
 
-        if Cfg.Keybind and Cfg.Keybind.Active ~= bool then
-            Cfg.Keybind:Set({
-                Active = bool,
-                Mode = Cfg.Keybind.Mode,
-                Key = Cfg.Keybind.Key,
-            })
-        end
-    end
+    	if Cfg.Keybind and Cfg.Keybind.Active ~= bool then
+    	    Cfg.Keybind:Set({
+    	        Active = bool,
+    	        Mode = Cfg.Keybind.Mode,
+    	        Key = Cfg.Keybind.Key,
+    	    })
+    	end
+	end
 
     Cfg.Hovering = function()
         if Cfg.Enabled then return end
@@ -3833,6 +3823,64 @@ end
 
 		Items.Button:OnClick(Cfg.Press)
 		Items.Button:OnHover(Cfg.Hovering, Cfg.NoHover)
+	end
+
+	Library.AddDivider = function(self, Data)
+    	Data = Data or {}
+
+    	local Cfg = {
+    	    Text = Data.Text or nil,
+    	    Items = {},
+    	}
+
+    	local Items = Cfg.Items
+    	do
+    	    Items.Element = Library:Create("Frame", {
+            Parent = self.Items.Elements.Instance,
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 0),
+            BorderSizePixel = 0,
+            AutomaticSize = Enum.AutomaticSize.Y,
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        })
+
+        if Cfg.Text then
+            Items.Label = Library:Create("TextLabel", {
+                Parent = Items.Element.Instance,
+                TextColor3 = Themes.Preset.TextColor,
+                Text = Cfg.Text,
+                FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold, Enum.FontStyle.Normal),
+                TextSize = 13,
+                BackgroundTransparency = 1,
+                AutomaticSize = Enum.AutomaticSize.XY,
+                Size = UDim2.new(1, 0, 0, 0),
+                TextXAlignment = Enum.TextXAlignment.Center,
+                BorderSizePixel = 0,
+                ZIndex = 2,
+                BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+            })
+
+            Items.Line = Library:Create("Frame", {
+                Parent = Items.Element.Instance,
+                BackgroundTransparency = 0.5,
+                Position = UDim2.new(0, 0, 0, 22),
+                Size = UDim2.new(1, 0, 0, 1),
+                BorderSizePixel = 0,
+                BackgroundColor3 = Themes.Preset["1"],
+            }):Themify("1", "BackgroundColor3")
+        else
+            Items.Line = Library:Create("Frame", {
+                Parent = Items.Element.Instance,
+                BackgroundTransparency = 0.5,
+                Position = UDim2.new(0, 0, 0.5, 0),
+                Size = UDim2.new(1, 0, 0, 1),
+                BorderSizePixel = 0,
+                BackgroundColor3 = Themes.Preset["1"],
+            }):Themify("1", "BackgroundColor3")
+        end
+    end
+
+    	return setmetatable(Cfg, Library)
 	end
 
 	Library.AddInput = function(self, Data)
