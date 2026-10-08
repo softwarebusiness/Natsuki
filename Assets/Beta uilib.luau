@@ -2793,23 +2793,23 @@ do
 	end
 
 	Library.AddToggle = function(self, Data)
-    	Data = Data or {}
+    Data = Data or {}
 
-    	local Cfg = {
-    	    Text = Data.Text or "Toggle",
-    	    Flag = Data.Flag or Data.Name or Data.Text or "Toggle",
-    	    Enabled = Data.Default or false,
-    	    Callback = Data.Callback or function() end,
+    local Cfg = {
+        Text = Data.Text or "Toggle",
+        Flag = Data.Flag or Data.Name or Data.Text or "Toggle",
+        Enabled = Data.Default or false,
+        Callback = Data.Callback or function() end,
 
-    	    Items = {},
-    	    Keybind = nil,
-    	}
+        Items = {},
+        Keybind = nil,
+    }
 
-    	local Items = Cfg.Items
-    	do
-    	    Items.Toggle = Library:Create("TextButton", {
-	        Active = false,
-   	        Parent = self.Items.Elements.Instance,
+    local Items = Cfg.Items
+    do
+        Items.Toggle = Library:Create("TextButton", {
+            Active = false,
+            Parent = self.Items.Elements.Instance,
             Size = UDim2.new(1, 0, 0, 0),
             ZIndex = 3,
             BackgroundTransparency = 1,
@@ -2889,43 +2889,233 @@ do
         Library:Create("UIListLayout", {
             FillDirection = Enum.FillDirection.Horizontal,
             HorizontalAlignment = Enum.HorizontalAlignment.Right,
+            VerticalAlignment = Enum.VerticalAlignment.Center,
             Parent = Items.Components.Instance,
             Padding = UDim.new(0, 7),
             SortOrder = Enum.SortOrder.LayoutOrder,
         })
     end
 
+    local KeybindKey, KeybindMode, KeybindActive, KeybindBinding, KeybindFlag
+    local KeybindListItem
+
+    local function GetKeyText()
+        if not KeybindKey or KeybindKey == "NONE" or KeybindKey == "" then
+            return "None"
+        end
+        if Keys[KeybindKey] then
+            return Keys[KeybindKey]
+        end
+        return tostring(KeybindKey):gsub("Enum.KeyCode.", ""):gsub("Enum.UserInputType.", ""):gsub("Enum.", "")
+    end
+
+    if Data.Key then
+        KeybindFlag = Data.KeybindFlag or (Cfg.Flag .. "_key")
+        KeybindKey = Library:ConvertEnum(Data.Key) or Data.Key
+        KeybindMode = Data.KeybindMode or "Toggle"
+        KeybindActive = false
+
+        Items.KeybindHolder = Library:Create("TextButton", {
+            Parent = Items.Components.Instance,
+            BackgroundTransparency = 0.75,
+            Size = UDim2.new(0, 30, 0, 18),
+            BorderSizePixel = 0,
+            AutomaticSize = Enum.AutomaticSize.X,
+            BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+            Text = "",
+            LayoutOrder = 2,
+        }):Themify("Black", "BackgroundColor3")
+
+        Library:Create("UICorner", {
+            Parent = Items.KeybindHolder.Instance,
+            CornerRadius = UDim.new(0, 4),
+        })
+
+        Library:Create("UIStroke", {
+            Color = Color3.fromRGB(44, 45, 57),
+            Transparency = 0.550000011920929,
+            Parent = Items.KeybindHolder.Instance,
+        })
+
+        Library:Create("UIPadding", {
+            Parent = Items.KeybindHolder.Instance,
+            PaddingLeft = UDim.new(0, 6),
+            PaddingRight = UDim.new(0, 6),
+        })
+
+        Items.KeybindText = Library:Create("TextLabel", {
+            TextColor3 = Color3.fromRGB(194, 196, 202),
+            FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium, Enum.FontStyle.Normal),
+            TextSize = 13,
+            Text = GetKeyText(),
+            Parent = Items.KeybindHolder.Instance,
+            Size = UDim2.new(0, 0, 1, 0),
+            BackgroundTransparency = 1,
+            AutomaticSize = Enum.AutomaticSize.X,
+            TextXAlignment = Enum.TextXAlignment.Center,
+            BorderSizePixel = 0,
+            ZIndex = 2,
+        })
+
+        Flags[KeybindFlag] = {
+            Mode = KeybindMode,
+            Key = KeybindKey,
+            Active = false,
+        }
+
+        if Data.ShowKeyInList ~= false then
+            KeybindListItem = Library.KeybindList:ListElement(Cfg.Text, "[" .. GetKeyText() .. "]")
+            KeybindListItem.SetVisible(false)
+        end
+
+        Items.KeybindHolder.Instance.MouseButton1Click:Connect(function()
+            Items.KeybindText.Instance.Text = "..."
+
+            if KeybindBinding and KeybindBinding.Connection then
+                KeybindBinding.Connection:Disconnect()
+            end
+            KeybindBinding = nil
+
+            KeybindBinding = Library:Connect(Services.UserInputService.InputBegan, function(input, gp)
+                if Services.UserInputService:GetFocusedTextBox() then
+                    return
+                end
+
+                KeybindKey = input.KeyCode ~= Enum.KeyCode.Unknown and input.KeyCode or input.UserInputType
+                Items.KeybindText.Instance.Text = GetKeyText()
+
+                if KeybindBinding and KeybindBinding.Connection then
+                    KeybindBinding.Connection:Disconnect()
+                end
+                KeybindBinding = nil
+
+                Flags[KeybindFlag] = {
+                    Mode = KeybindMode,
+                    Key = KeybindKey,
+                    Active = KeybindActive,
+                }
+
+                if KeybindListItem then
+                    KeybindListItem.ChangeText(Cfg.Text, "[" .. GetKeyText() .. "]")
+                end
+            end)
+        end)
+
+        Library:Connect(Services.UserInputService.InputBegan, function(input, gp)
+            if Services.UserInputService:GetFocusedTextBox() then
+                return
+            end
+
+            local SelectedKey = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode
+                or input.UserInputType
+
+            if SelectedKey == KeybindKey or tostring(SelectedKey) == tostring(KeybindKey) then
+                if KeybindMode == "Toggle" then
+                    Cfg.Set(not Cfg.Enabled)
+                elseif KeybindMode == "Hold" then
+                    Cfg.Set(true)
+                end
+            end
+        end)
+
+        Library:Connect(Services.UserInputService.InputEnded, function(input, gp)
+            if Services.UserInputService:GetFocusedTextBox() then
+                return
+            end
+
+            local SelectedKey = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode
+                or input.UserInputType
+
+            if SelectedKey == KeybindKey or tostring(SelectedKey) == tostring(KeybindKey) then
+                if KeybindMode == "Hold" then
+                    Cfg.Set(false)
+                end
+            end
+        end)
+
+        ConfigFlags[KeybindFlag] = function(input)
+            if type(input) ~= "table" then
+                return
+            end
+
+            if input.Key then
+                KeybindKey = Library:ConvertEnum(input.Key) or input.Key
+            end
+            if input.Mode then
+                KeybindMode = input.Mode
+            end
+            if input.Active ~= nil then
+                KeybindActive = input.Active
+            end
+
+            Items.KeybindText.Instance.Text = GetKeyText()
+
+            Flags[KeybindFlag] = {
+                Mode = KeybindMode,
+                Key = KeybindKey,
+                Active = KeybindActive,
+            }
+
+            if KeybindListItem then
+                KeybindListItem.ChangeText(Cfg.Text, "[" .. GetKeyText() .. "]")
+            end
+        end
+
+        Cfg.Keybind = {
+            Active = false,
+            Mode = KeybindMode,
+            Key = KeybindKey,
+            Set = ConfigFlags[KeybindFlag],
+        }
+    end
+
     Cfg.Set = function(bool)
-    	bool = not not bool
+        bool = not not bool
 
-    	Items.Accent.Instance.BackgroundTransparency = bool and 0 or 1
-    	Items.Tick.Instance.ImageTransparency = bool and 0 or 1
-    	Items.Tick.Instance.Rotation = 0
+        if bool then
+            Items.Tick.Instance.Rotation = -45
+            Items.Accent:Tween({ BackgroundTransparency = 0 })
+            Items.Tick:Tween({ ImageTransparency = 0, Rotation = 0 })
+        else
+            Items.Accent:Tween({ BackgroundTransparency = 1 })
+            Items.Tick:Tween({ ImageTransparency = 1 })
+        end
 
-    	Cfg.Enabled = bool
-    	Flags[Cfg.Flag] = bool
-    	Cfg.Callback(bool)
+        Cfg.Enabled = bool
+        Flags[Cfg.Flag] = bool
+        Cfg.Callback(bool)
 
-    	if Cfg.Keybind and Cfg.Keybind.Active ~= bool then
-    	    Cfg.Keybind:Set({
-    	        Active = bool,
-    	        Mode = Cfg.Keybind.Mode,
-    	        Key = Cfg.Keybind.Key,
-    	    })
-    	end
-	end
+        if Cfg.Keybind then
+            Cfg.Keybind.Active = bool
+            KeybindActive = bool
+
+            Flags[KeybindFlag] = {
+                Mode = KeybindMode,
+                Key = KeybindKey,
+                Active = bool,
+            }
+
+            if KeybindListItem then
+                KeybindListItem.SetVisible(bool)
+            end
+        end
+    end
 
     Cfg.Hovering = function()
-        if Cfg.Enabled then return end
+        if Cfg.Enabled then
+            return
+        end
         Items.Title:Tween({ TextColor3 = Themes.Preset.TextColor })
     end
 
     Cfg.NoHover = function()
-        if Cfg.Enabled then return end
+        if Cfg.Enabled then
+            return
+        end
         Items.Title:Tween({ TextColor3 = Themes.Preset.Unselected })
     end
 
-    Items.Toggle:OnClick(function()
+    Items.Toggle.Instance.MouseButton1Click:Connect(function()
         Cfg.Set(not Cfg.Enabled)
     end)
 
@@ -2933,21 +3123,6 @@ do
 
     ConfigFlags[Cfg.Flag] = Cfg.Set
     Cfg.Set(Cfg.Enabled)
-
-    if Data.Key then
-        Cfg.Keybind = self:AddKeyPicker({
-            Text = (Data.KeybindText or Cfg.Text) .. " Key",
-            Flag = (Data.KeybindFlag or (Cfg.Flag .. "_key")),
-            Default = Data.Key,
-            Mode = Data.KeybindMode or "Toggle",
-            ShowInList = Data.ShowKeyInList ~= false,
-            Callback = function(Active)
-                if Cfg.Enabled ~= Active then
-                    Cfg.Set(Active)
-                end
-            end,
-        })
-    end
 
     return setmetatable(Cfg, Library)
 end
