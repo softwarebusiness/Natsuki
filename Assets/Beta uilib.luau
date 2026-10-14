@@ -1345,7 +1345,7 @@ do
 	local Warn = Color3.fromRGB(255, 196, 92)
 	local Bad = Color3.fromRGB(255, 105, 115)
 
-	local CompactLayout = { Size = Vector2.new(320, 33), Radius = 17 }
+	local CompactLayout = { Size = Vector2.new(440, 33), Radius = 17 }
 	local ExpandedLayout = { Size = Vector2.new(330, 96), Radius = 26 }
 	local FlashHeight, FlashRadius = 38, 19
 
@@ -1429,8 +1429,8 @@ do
 		TextSize = 13,
 		Color = "Text",
 		TextXAlignment = Enum.TextXAlignment.Right,
-		Position = UDim2.new(1, -240, 0, 0),
-		Size = UDim2.new(0, 228, 1, 0),
+		Position = UDim2.new(1, -310, 0, 0),
+		Size = UDim2.new(0, 298, 1, 0),
 		Parent = CompactGroup,
 	})
 
