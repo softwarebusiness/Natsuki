@@ -445,12 +445,12 @@ local MainScale = Create("UIScale", { Scale = 0.96, Parent = Main })
 local Blur = { Enabled = true, Targets = {} }
 do
 	local Dof = Create("DepthOfFieldEffect", {
-		Name = "NatsukiBlur",
-		FarIntensity = 0,
-		FocusDistance = 51.6,
-		InFocusRadius = 50,
-		NearIntensity = 1,
-		Parent = Lighting,
+    	Name = "NatsukiBlur",
+    	FarIntensity = 0,
+    	FocusDistance = 15,
+    	InFocusRadius = 15,
+    	NearIntensity = 1,
+    	Parent = Lighting,
 	})
 	Blur.Effect = Dof
 
@@ -1220,7 +1220,7 @@ do
 			PaddingBottom = UDim.new(0, 6),
 		}),
 	})
-	
+
 	KeybindList.Frame, KeybindList.Holder, KeybindList.Separator = Frame, Holder, Sep
 	Blur.Add(Frame)
 	Frame.Visible = false
