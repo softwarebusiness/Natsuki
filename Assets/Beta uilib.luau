@@ -1345,7 +1345,7 @@ do
 	local Warn = Color3.fromRGB(255, 196, 92)
 	local Bad = Color3.fromRGB(255, 105, 115)
 
-	local CompactLayout = { Size = Vector2.new(380, 33), Radius = 17 }
+	local CompactLayout = { Size = Vector2.new(320, 33), Radius = 17 }
 	local ExpandedLayout = { Size = Vector2.new(330, 96), Radius = 26 }
 	local FlashHeight, FlashRadius = 38, 19
 
@@ -1429,8 +1429,8 @@ do
 		TextSize = 13,
 		Color = "Text",
 		TextXAlignment = Enum.TextXAlignment.Right,
-		Position = UDim2.new(1, -280, 0, 0),
-		Size = UDim2.new(0, 268, 1, 0),
+		Position = UDim2.new(1, -240, 0, 0),
+		Size = UDim2.new(0, 228, 1, 0),
 		Parent = CompactGroup,
 	})
 
@@ -2958,6 +2958,15 @@ function Config.SetAutoload(Name)
 	end
 end
 
+function Config.SetFolder(Path)
+	if type(Path) ~= "string" or Path == "" then return end
+	ConfigFolder = Path
+	AutoloadFile = Path .. "/autoload.txt"
+	pcall(function()
+		if not isfolder(ConfigFolder) then makefolder(ConfigFolder) end
+	end)
+end
+
 local function SetBlurStrength(Percent)
 	Blur.Effect.NearIntensity = math.clamp(Percent / 100, 0, 1)
 end
@@ -3164,7 +3173,7 @@ local function BuildEspPreviewWindow(S, VisualsTab)
 		Theme = { BackgroundColor3 = "Element" },
 	}, { Corner(6), Stroke() })
 
-	local Viewport = Create("ViewportFrame", {
+	local ViewportFrame = Create("ViewportFrame", {
 		BackgroundTransparency = 1,
 		Size = UDim2.fromScale(1, 1),
 		Ambient = Color3.fromRGB(170, 170, 175),
@@ -3172,8 +3181,8 @@ local function BuildEspPreviewWindow(S, VisualsTab)
 		LightDirection = Vector3.new(-1, -1, -1),
 		Parent = Canvas,
 	})
-	local Camera = Create("Camera", { FieldOfView = CameraFov, Parent = Viewport })
-	Viewport.CurrentCamera = Camera
+	local Camera = Create("Camera", { FieldOfView = CameraFov, Parent = ViewportFrame })
+	ViewportFrame.CurrentCamera = Camera
 
 	local Overlay = Create("CanvasGroup", {
 		BackgroundTransparency = 1,
@@ -3488,7 +3497,7 @@ local function BuildEspPreviewWindow(S, VisualsTab)
 			Copy:PivotTo(Copy:GetPivot() + (Vector3.new(0, -0.4, 0) - BoundsCF.Position))
 		end
 
-		Copy.Parent = Viewport
+		Copy.Parent = ViewportFrame
 		Clone, CloneRoot = Copy, Root
 		CloneSource = SourceKind
 	end
