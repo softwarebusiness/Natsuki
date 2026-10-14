@@ -488,18 +488,28 @@ do
 		return Cam.CFrame:PointToObjectSpace(World)
 	end
 
-	Connect(RunService.RenderStepped, function()
+		Connect(RunService.RenderStepped, function()
 		local Cam = workspace.CurrentCamera
 		local AnyActive = false
 		for _, Target in Blur.Targets do
 			local Frame, Part = Target.Frame, Target.Part
-			local Active = Cam and Blur.Enabled and ScreenGui.Enabled and Frame.Visible
+			if not Part or not Part.Parent and Part.Parent ~= nil then
+				continue
+			end
+			local Active = Cam and Blur.Enabled and ScreenGui.Enabled and Frame.Visible and Frame.AbsoluteSize.Y > 1
 			if not Active then
-				Part.Parent = nil
+				if Part.Parent then
+					pcall(function() Part.Parent = nil end)
+				end
 				continue
 			end
 			AnyActive = true
-			Part.Parent = Cam
+			if Part.Parent ~= Cam then
+				local Ok2 = pcall(function() Part.Parent = Cam end)
+				if not Ok2 then
+					continue
+				end
+			end
 			local Pos, Size = Frame.AbsolutePosition, Frame.AbsoluteSize
 			local A = ToCameraSpace(Cam, Pos.X + 2, Pos.Y + 2)
 			local B = ToCameraSpace(Cam, Pos.X + Size.X - 2, Pos.Y + Size.Y - 2)
