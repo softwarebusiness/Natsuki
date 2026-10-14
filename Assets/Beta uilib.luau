@@ -519,7 +519,7 @@ local TopBar = Create("Frame", {
 })
 do
 	local Title = Label({
-		Text = "Natsuki",
+		Text = "Natsuki.pink",
 		FontFace = FontBold,
 		TextColor3 = Color3.new(1, 1, 1),
 		Position = UDim2.fromOffset(14, 0),
@@ -987,7 +987,7 @@ local function Notify(Opts)
 	}, { Corner(6), Stroke("Outline") })
 	LogoBadge(Card, 18, UDim2.fromOffset(12, 11))
 	GradientText({
-		Text = "Natsuki",
+		Text = "Natsuki.pink",
 		AutomaticSize = Enum.AutomaticSize.X,
 		Position = UDim2.fromOffset(40, 10),
 		Size = UDim2.fromOffset(0, 20),
@@ -1387,7 +1387,7 @@ do
 	end
 
 	local function GradientTitle(Props)
-		Props.Text = "Natsuki"
+		Props.Text = "Natsuki.pink"
 		Props.FontFace = FontBold
 		Props.TextColor3 = Color3.new(1, 1, 1)
 		Props.AutomaticSize = Enum.AutomaticSize.X
