@@ -1222,8 +1222,6 @@ do
 	})
 
 	KeybindList.Frame, KeybindList.Holder, KeybindList.Separator = Frame, Holder, Sep
-	Blur.Add(Frame)
-	Frame.Visible = false
 
 	local Dragging, DragStart, StartPos
 	Connect(Header.InputBegan, function(Input)
@@ -1254,20 +1252,12 @@ function KeybindList.Refresh()
 		Entry.Update()
 		if Entry.Active then Any = true end
 	end
-	KeybindListToken += 1
-	local Token = KeybindListToken
 	if Any then
-		KeybindList.Frame.Visible = true
 		KeybindList.Holder.Visible = true
 		KeybindList.Separator.Visible = true
 	else
 		KeybindList.Holder.Visible = false
 		KeybindList.Separator.Visible = false
-		task.delay(0.22, function()
-			if Token == KeybindListToken then
-				KeybindList.Frame.Visible = false
-			end
-		end)
 	end
 end
 
