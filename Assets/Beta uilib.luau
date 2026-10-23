@@ -66,6 +66,8 @@ local TopbarHeight = 32
 local BottombarHeight = 36
 
 local Connections = {}
+local Flags = {}
+
 local function Connect(Signal, Fn)
 	local C = Signal:Connect(Fn)
 	table.insert(Connections, C)
@@ -444,13 +446,20 @@ local MainScale = Create("UIScale", { Scale = 0.96, Parent = Main })
 
 local Blur = { Enabled = true, Targets = {} }
 do
+	for _, D in Lighting:GetChildren() do
+		if D:IsA("DepthOfFieldEffect") and D.Name == "NatsukiBlur" then
+			D:Destroy()
+		end
+	end
+
 	local Dof = Create("DepthOfFieldEffect", {
-    	Name = "NatsukiBlur",
-    	FarIntensity = 0,
-    	FocusDistance = 15,
-    	InFocusRadius = 15,
-    	NearIntensity = 1,
-    	Parent = Lighting,
+		Name = "NatsukiBlur",
+		FarIntensity = 0,
+		FocusDistance = 51.6,
+		InFocusRadius = 50,
+		NearIntensity = 1,
+		Enabled = false,
+		Parent = Lighting,
 	})
 	Blur.Effect = Dof
 
@@ -488,7 +497,7 @@ do
 		return Cam.CFrame:PointToObjectSpace(World)
 	end
 
-		Connect(RunService.RenderStepped, function()
+	Connect(RunService.RenderStepped, function()
 		local Cam = workspace.CurrentCamera
 		local AnyActive = false
 		for _, Target in Blur.Targets do
@@ -506,9 +515,7 @@ do
 			AnyActive = true
 			if Part.Parent ~= Cam then
 				local Ok2 = pcall(function() Part.Parent = Cam end)
-				if not Ok2 then
-					continue
-				end
+				if not Ok2 then continue end
 			end
 			local Pos, Size = Frame.AbsolutePosition, Frame.AbsoluteSize
 			local A = ToCameraSpace(Cam, Pos.X + 2, Pos.Y + 2)
@@ -656,6 +663,20 @@ do
 			Paint()
 		end
 	end)
+
+	Flags["WindowSize"] = {
+		Save = function()
+			return {
+				X = math.floor(Main.Size.X.Offset),
+				Y = math.floor(Main.Size.Y.Offset),
+			}
+		end,
+		Load = function(Data)
+			if type(Data) == "table" and type(Data.X) == "number" and type(Data.Y) == "number" then
+				Main.Size = UDim2.fromOffset(Data.X, Data.Y)
+			end
+		end,
+	}
 end
 
 local Pages = Create("Frame", {
@@ -1230,7 +1251,6 @@ do
 			PaddingBottom = UDim.new(0, 6),
 		}),
 	})
-
 	KeybindList.Frame, KeybindList.Holder, KeybindList.Separator = Frame, Holder, Sep
 	Blur.Add(Frame)
 
@@ -1263,12 +1283,18 @@ function KeybindList.Refresh()
 		Entry.Update()
 		if Entry.Active then Any = true end
 	end
+	KeybindListToken += 1
+	local Token = KeybindListToken
 	if Any then
 		KeybindList.Holder.Visible = true
 		KeybindList.Separator.Visible = true
 	else
-		KeybindList.Holder.Visible = false
-		KeybindList.Separator.Visible = false
+		task.delay(0.22, function()
+			if Token == KeybindListToken then
+				KeybindList.Holder.Visible = false
+				KeybindList.Separator.Visible = false
+			end
+		end)
 	end
 end
 
@@ -1350,7 +1376,7 @@ do
 	local Warn = Color3.fromRGB(255, 196, 92)
 	local Bad = Color3.fromRGB(255, 105, 115)
 
-	local CompactLayout = { Size = Vector2.new(440, 33), Radius = 17 }
+	local CompactLayout = { Size = Vector2.new(380, 33), Radius = 17 }
 	local ExpandedLayout = { Size = Vector2.new(330, 96), Radius = 26 }
 	local FlashHeight, FlashRadius = 38, 19
 
@@ -1434,8 +1460,8 @@ do
 		TextSize = 13,
 		Color = "Text",
 		TextXAlignment = Enum.TextXAlignment.Right,
-		Position = UDim2.new(1, -310, 0, 0),
-		Size = UDim2.new(0, 298, 1, 0),
+		Position = UDim2.new(1, -250, 0, 0),
+		Size = UDim2.new(0, 238, 1, 0),
 		Parent = CompactGroup,
 	})
 
@@ -1895,7 +1921,7 @@ function TargetHud:GetTarget()
 end
 
 function TargetHud:IsVisible()
-	return self.Shown
+	return self.Visible
 end
 
 function TargetHud:Destroy()
@@ -1907,16 +1933,17 @@ function TargetHud:Destroy()
 	if Index then table.remove(TargetHuds, Index) end
 end
 
-local Flags = {}
-
 local function EncodeKey(Key)
 	if not Key then return nil end
-	return tostring(Key.EnumType) .. "." .. Key.Name
+	return Key.EnumType.Name .. "." .. Key.Name
 end
 
 local function DecodeKey(Text)
 	if type(Text) ~= "string" then return nil end
 	local EnumName, Item = Text:match("^(%w+)%.(%w+)$")
+	if not EnumName then
+		EnumName, Item = Text:match("^Enum%.(%w+)%.(%w+)$")
+	end
 	if not EnumName then return nil end
 	local Ok, Key = pcall(function() return Enum[EnumName][Item] end)
 	return Ok and Key or nil
