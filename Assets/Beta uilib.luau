@@ -564,7 +564,9 @@ do
 			AnyActive = true
 			if Part.Parent ~= Cam then
 				local Ok2 = pcall(function() Part.Parent = Cam end)
-				if not Ok2 then continue end
+				if not Ok2 then
+					continue
+				end
 			end
 			local Pos, Size = Frame.AbsolutePosition, Frame.AbsoluteSize
 			local A = ToCameraSpace(Cam, Pos.X + 2, Pos.Y + 2)
