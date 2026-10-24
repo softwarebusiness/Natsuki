@@ -1301,7 +1301,6 @@ do
 		}),
 	})
 	KeybindList.Frame, KeybindList.Holder, KeybindList.Separator = Frame, Holder, Sep
-	Blur.Add(Frame)
 
 	local Dragging, DragStart, StartPos
 	Connect(Header.InputBegan, function(Input)
