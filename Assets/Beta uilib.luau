@@ -574,7 +574,7 @@ do
 			Part.Size = Vector3.new(math.abs(B.X - A.X), math.abs(B.Y - A.Y), 0)
 			Part.CFrame = Cam.CFrame * CFrame.new((A.X + B.X) / 2, (A.Y + B.Y) / 2, -BlurDepth)
 		end
-		Dof.Enabled = AnyActive
+		-- Dof.Enabled = AnyActive
 	end)
 end
 Blur.Add(Main)
