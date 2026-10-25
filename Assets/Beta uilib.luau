@@ -3401,7 +3401,7 @@ local function BuildEspPreviewWindow(S, VisualsTab)
 		end
 
 		for _, D in workspace:GetDescendants() do
-			if D:IsA("Model") and IsViewmodelRig(D) and D.Name ~= "LocalViewmodel" then
+			if D:IsA("Model") and IsViewmodelRig(D) and D.Name ~= "LocalViewmodel" and D.Name ~= "Apparition" then
 				return D
 			end
 		end
@@ -3434,7 +3434,7 @@ local function BuildEspPreviewWindow(S, VisualsTab)
 		local Player = Players.LocalPlayer
 		local Names = { Player.Name, Player.DisplayName, tostring(Player.UserId) }
 		for _, Folder in workspace:GetChildren() do
-			if Folder:IsA("Model") then
+			if Folder:IsA("Model") and Folder.Name ~= "Apparition" then
 				for _, Name in Names do
 					if Folder.Name == Name and HasRealParts(Folder) then
 						return Folder
