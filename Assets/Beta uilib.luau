@@ -3015,9 +3015,6 @@ function Config.Save(Name)
 		local Ok, Value = pcall(Entry.Save)
 		if Ok and Value ~= nil then 
             Data[Flag] = Value 
-        elseif not Ok then
-            print("cfg", Flag, "Trigger:", Value)
-        end
 	end
 	writefile(ConfigPath(Name), HttpService:JSONEncode({ Version = 1, Flags = Data }))
 end
