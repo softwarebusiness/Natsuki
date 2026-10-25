@@ -3356,7 +3356,7 @@ local function BuildEspPreviewWindow(S, VisualsTab)
 
 	local function IsViewmodelRig(Model)
 		if not Model or not Model:IsA("Model") then return false end
-		if Model.Name == "LocalViewmodel" then return false end
+		if Model.Name == "LocalViewmodel" or Model.Name == "Apparition" then return false end
 		local Torso = Model:FindFirstChild("torso") or Model:FindFirstChild("Torso")
 		if not Torso then return false end
 		local Head = Model:FindFirstChild("head") or Model:FindFirstChild("Head")
