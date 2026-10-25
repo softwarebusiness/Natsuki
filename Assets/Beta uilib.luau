@@ -1234,7 +1234,9 @@ local KeyNames = {
 
 local function KeyName(Key)
 	if not Key then return "None" end
-	return KeyNames[Key.Name] or Key.Name
+	local Success, Name = pcall(function() return Key.Name end)
+	if not Success or not Name then return "Unknown" end
+	return KeyNames[Name] or Name
 end
 
 local function InputMatches(Input, Key)
@@ -1994,7 +1996,14 @@ local function EncodeKey(Key)
 		local Match = string.match(Str, "Enum%.(%w+)%.")
 		if Match then EnumName = Match end
 	end
-	return EnumName .. "." .. Key.Name
+	
+	local Success2, ItemName = pcall(function() return Key.Name end)
+	if not Success2 or not ItemName then
+		local Str = tostring(Key)
+		ItemName = string.match(Str, "%.([%w_]+)$") or "Unknown"
+	end
+	
+	return EnumName .. "." .. ItemName
 end
 
 local function DecodeKey(Text)
