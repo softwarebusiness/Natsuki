@@ -3026,7 +3026,10 @@ function Config.Save(Name)
             Data[Flag] = Value
 		end
 	end
-	writefile(ConfigPath(Name), HttpService:JSONEncode({ Version = 1, Flags = Data }))
+	local Success, Encoded = pcall(function()
+		return HttpService:JSONEncode({ Version = 1, Flags = Data })
+	end)
+	writefile(ConfigPath(Name), Encoded)
 end
 
 function Config.Load(Name)
