@@ -3528,7 +3528,9 @@ local function BuildEspPreviewWindow(S, VisualsTab)
 		if not Ok2 or not Copy then return end
 
 		for _, D in Copy:GetDescendants() do
-			if D:IsA("BaseScript") or D:IsA("Sound") or D:IsA("ParticleEmitter")
+			if D.Name == "Natsuki_CustomModel" or D.Name == "Natsuki_CustomMesh" then
+				D:Destroy()
+			elseif D:IsA("BaseScript") or D:IsA("Sound") or D:IsA("ParticleEmitter")
 				or D:IsA("Trail") or D:IsA("Beam") or D:IsA("Fire") or D:IsA("Smoke")
 				or D:IsA("Sparkles") or D:IsA("Explosion") or D:IsA("Highlight")
 				or D:IsA("SelectionBox") or D:IsA("SelectionSphere")
