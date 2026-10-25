@@ -1988,24 +1988,8 @@ end
 
 local function EncodeKey(Key)
 	if not Key then return nil end
-	local EnumName = "KeyCode"
-	local Success, Name = pcall(function() return Key.EnumType.Name end)
-	if Success and Name then
-		EnumName = Name
-	else
-		local Str = tostring(Key)
-		local Match = string.match(Str, "Enum%.(%w+)%.")
-		if Match then EnumName = Match end
-	end
-	
-	local Success2, ItemName = pcall(function() return Key.Name end)
-	if not Success2 or not ItemName then
-		ItemName = "Unknown"
-	end
-	
-	return EnumName .. "." .. ItemName
+	return tostring(Key):gsub("^Enum%.", "")
 end
-
 local function DecodeKey(Text)
 	if type(Text) ~= "string" then return nil end
 	local EnumName, Item = Text:match("^(%w+)%.(%w+)$")
