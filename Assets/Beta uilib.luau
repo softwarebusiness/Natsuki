@@ -1986,10 +1986,13 @@ end
 local function EncodeKey(Key)
 	if not Key then return nil end
 	local EnumName = "KeyCode"
-	if Key.EnumType then
-		EnumName = Key.EnumType.Name
-	elseif tostring(Key):match("Enum%.(%w+)%.") then
-		EnumName = tostring(Key):match("Enum%.(%w+)%.")
+	local Success, Name = pcall(function() return Key.EnumType.Name end)
+	if Success and Name then
+		EnumName = Name
+	else
+		local Str = tostring(Key)
+		local Match = string.match(Str, "Enum%.(%w+)%.")
+		if Match then EnumName = Match end
 	end
 	return EnumName .. "." .. Key.Name
 end
@@ -3010,7 +3013,11 @@ function Config.Save(Name)
 	local Data = {}
 	for Flag, Entry in Flags do
 		local Ok, Value = pcall(Entry.Save)
-		if Ok and Value ~= nil then Data[Flag] = Value end
+		if Ok and Value ~= nil then 
+            Data[Flag] = Value 
+        elseif not Ok then
+            print("cfg", Flag, "Trigger:", Value)
+        end
 	end
 	writefile(ConfigPath(Name), HttpService:JSONEncode({ Version = 1, Flags = Data }))
 end
