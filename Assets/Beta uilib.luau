@@ -1241,7 +1241,8 @@ end
 
 local function InputMatches(Input, Key)
 	if not Key then return false end
-	if Key.EnumType == Enum.KeyCode then
+	local Success, EnumType = pcall(function() return Key.EnumType end)
+	if Success and EnumType == Enum.KeyCode then
 		return Input.KeyCode == Key
 	end
 	return Input.UserInputType == Key
@@ -1999,8 +2000,7 @@ local function EncodeKey(Key)
 	
 	local Success2, ItemName = pcall(function() return Key.Name end)
 	if not Success2 or not ItemName then
-		local Str = tostring(Key)
-		ItemName = string.match(Str, "%.([%w_]+)$") or "Unknown"
+		ItemName = "Unknown"
 	end
 	
 	return EnumName .. "." .. ItemName
