@@ -3014,7 +3014,8 @@ function Config.Save(Name)
 	for Flag, Entry in Flags do
 		local Ok, Value = pcall(Entry.Save)
 		if Ok and Value ~= nil then 
-            Data[Flag] = Value 
+            Data[Flag] = Value
+		end
 	end
 	writefile(ConfigPath(Name), HttpService:JSONEncode({ Version = 1, Flags = Data }))
 end
