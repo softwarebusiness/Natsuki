@@ -1985,7 +1985,13 @@ end
 
 local function EncodeKey(Key)
 	if not Key then return nil end
-	return Key.EnumType.Name .. "." .. Key.Name
+	local EnumName = "KeyCode"
+	if Key.EnumType then
+		EnumName = Key.EnumType.Name
+	elseif tostring(Key):match("Enum%.(%w+)%.") then
+		EnumName = tostring(Key):match("Enum%.(%w+)%.")
+	end
+	return EnumName .. "." .. Key.Name
 end
 
 local function DecodeKey(Text)
