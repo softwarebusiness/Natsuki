@@ -3698,7 +3698,7 @@ local function BuildEspPreviewWindow(S, VisualsTab)
 	local Angle, Pitch = 0, 0.8
 	local Distance, TargetDistance = CameraDistance, CameraDistance
 	local Orbiting, LastInteraction, LastMouse = false, -math.huge, Vector2.zero
-	local MinDistance, MaxDistance = 6, 20
+	local MinDistance, MaxDistance = 6, 50
 
 	cloneref(game:GetService("ContextActionService")):BindActionAtPriority("NatsukiPreviewZoom", function()
 		if PreviewWindow.Visible and PointInFrame(MouseLocation(), Canvas) then
