@@ -2246,7 +2246,7 @@ function Container:Toggle(Name, Opts)
 			end,
 		})
 		Connect(UserInputService.InputBegan, function(Input, Gpe)
-			if Gpe or Bind.Listening or not InputMatches(Input, Bind.Key) then return end
+			if Bind.Listening or not InputMatches(Input, Bind.Key) then return end
 			if Bind.Mode == "Toggle" then
 				Set(not State)
 				task.spawn(Watermark.Flash, Name, State)
@@ -3095,7 +3095,7 @@ local function SetMenuOpen(V)
 end
 
 Connect(UserInputService.InputBegan, function(Input, Gpe)
-	if not Gpe and InputMatches(Input, MenuKey) then
+	if InputMatches(Input, MenuKey) then
 		SetMenuOpen(not MenuOpen)
 	end
 end)
